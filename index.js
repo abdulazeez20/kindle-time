@@ -18,6 +18,7 @@ function geturl(url) {
   }
   return items;
 }
+
 function formatDate(date, fmt = "yyyy-MM-dd") {
   if (!date) {
     return "";
@@ -47,25 +48,26 @@ function formatDate(date, fmt = "yyyy-MM-dd") {
       );
   return fmt;
 }
+
 function render() {
   // 保证 中国时区显示时间。不设置在一些 kindle 会出现时区问题
   const time = new Date();
   const len = time.getTime();
   const offset = time.getTimezoneOffset() * 60000; //本地时间与GMT时间差值
   const utcTime = len + offset; //格林尼治时间
-  const date = new Date(utcTime + 3600000 * 8);
+  const istTime = new Date(utcTime + 3600000 * 5.5); // IST is UTC+5:30
 
   const lunar = calendar.solar2lunar(
-    date.getUTCFullYear(),
-    date.getUTCMonth() + 1,
-    date.getUTCDate()
+    istTime.getUTCFullYear(),
+    istTime.getUTCMonth() + 1,
+    istTime.getUTCDate()
   );
-  const dateText = `${formatDate(date, "yyyy.M.d")} ${
+  const dateText = `${formatDate(istTime, "yyyy.M.d")} ${
     urlQuery.l == "en"
-      ? ["SUN", "MON", "TUES", "WED", "THUR", "FRI", "SAT"][date.getDay()]
-      : "星期" + ["日", "一", "二", "三", "四", "五", "六"][date.getDay()]
+      ? ["SUN", "MON", "TUES", "WED", "THUR", "FRI", "SAT"][istTime.getDay()]
+      : "星期" + ["日", "一", "二", "三", "四", "五", "六"][istTime.getDay()]
   }`;
-  const timeText = `${date.getHours()}:${date.getMinutes()}`;
+  const timeText = `${istTime.getHours()}:${istTime.getMinutes()}`;
   const cnDateText = `${lunar.IMonthCn}${lunar.IDayCn} ${lunar.Animal}年`;
 
   if (domDate.innerHTML != dateText) domDate.innerHTML = dateText;
